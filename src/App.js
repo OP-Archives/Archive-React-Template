@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createTheme, ThemeProvider, responsiveFontSizes } from "@mui/material/styles";
 import { CssBaseline, styled } from "@mui/material";
-import { blue } from "@mui/material/colors";
+import { pink } from "@mui/material/colors";
 import { lazy, Suspense } from "react";
 import Loading from "./utils/Loading";
 
@@ -24,7 +24,7 @@ export default function App() {
         default: "#0e0e10",
       },
       primary: {
-        main: blue[600],
+        main: pink[600],
       },
       secondary: {
         main: "#292828",
