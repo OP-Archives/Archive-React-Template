@@ -23,7 +23,7 @@ let messageCount = 0;
 let badgesCount = 0;
 
 export default function Chat(props) {
-  const { isPortrait, vodId, playerRef, playing, ARCHIVE_API_BASE, twitchId, channel, userChatDelay, delay, youtube, part, games } = props;
+  const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, channel, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
   const [shownMessages, setShownMessages] = useState([]);
   const comments = useRef([]);
@@ -57,7 +57,7 @@ export default function Chat(props) {
 
   useEffect(() => {
     const loadChannelBadges = () => {
-      fetch(`${ARCHIVE_API_BASE}/v2/badges`, {
+      fetch(`${VODS_API_BASE}/v2/badges`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export default function Chat(props) {
     };
 
     const loadEmotes = async () => {
-      await fetch(`${ARCHIVE_API_BASE}/emotes?vod_id=${vodId}`, {
+      await fetch(`${VODS_API_BASE}/emotes?vod_id=${vodId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -159,12 +159,12 @@ export default function Chat(props) {
     };
 
     const load7TVEmotes = () => {
-      fetch(`${BASE_7TV_EMOTE_API}/users/${channel.toLowerCase()}/emotes`, {
+      fetch(`${BASE_7TV_EMOTE_API}/users/${twitchId}/emotes`, {
         method: "GET",
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.status >= 400) return;
+          if (data.status_code >= 400) return;
           emotes.current["7tv_emotes"] = data;
         })
         .catch((e) => {
@@ -191,7 +191,7 @@ export default function Chat(props) {
     loadEmotes();
     loadChannelBadges();
     loadGlobalTwitchBadges();
-  }, [vodId, ARCHIVE_API_BASE, twitchId, channel]);
+  }, [vodId, VODS_API_BASE, twitchId, channel]);
 
   const getCurrentTime = useCallback(() => {
     if (!playerRef.current) return 0;
@@ -230,7 +230,7 @@ export default function Chat(props) {
     if (stoppedAtIndex.current === lastIndex && stoppedAtIndex.current !== 0) return;
 
     const fetchNextComments = () => {
-      fetch(`${ARCHIVE_API_BASE}/v1/vods/${vodId}/comments?cursor=${cursor.current}`, {
+      fetch(`${VODS_API_BASE}/v1/vods/${vodId}/comments?cursor=${cursor.current}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -543,7 +543,7 @@ export default function Chat(props) {
     });
     stoppedAtIndex.current = lastIndex;
     if (comments.current.length - 1 === lastIndex) fetchNextComments();
-  }, [getCurrentTime, playerRef, vodId, ARCHIVE_API_BASE, youtube, games, showTimestamp]);
+  }, [getCurrentTime, playerRef, vodId, VODS_API_BASE, youtube, games, showTimestamp]);
 
   const loop = useCallback(() => {
     if (loopRef.current !== null) clearInterval(loopRef.current);
@@ -554,7 +554,7 @@ export default function Chat(props) {
   useEffect(() => {
     if (!playing.playing || stoppedAtIndex.current === undefined) return;
     const fetchComments = (offset = 0) => {
-      fetch(`${ARCHIVE_API_BASE}/v1/vods/${vodId}/comments?content_offset_seconds=${offset}`, {
+      fetch(`${VODS_API_BASE}/v1/vods/${vodId}/comments?content_offset_seconds=${offset}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -598,7 +598,7 @@ export default function Chat(props) {
     return () => {
       stopLoop();
     };
-  }, [playing, vodId, getCurrentTime, loop, ARCHIVE_API_BASE]);
+  }, [playing, vodId, getCurrentTime, loop, VODS_API_BASE]);
 
   const stopLoop = () => {
     if (loopRef.current !== null) clearInterval(loopRef.current);
