@@ -9,7 +9,6 @@ import Settings from "./Settings";
 import { toHHMMSS } from "../utils/helpers";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-const GLOBAL_TWITCH_BADGES_API = "https://badges.twitch.tv/v1/badges/global/display?language=en";
 const BASE_TWITCH_CDN = "https://static-cdn.jtvnw.net";
 const BASE_FFZ_EMOTE_CDN = "https://cdn.frankerfacez.com/emote";
 //Needs CORS for mobile devices.
@@ -56,7 +55,7 @@ export default function Chat(props) {
   });
 
   useEffect(() => {
-    const loadChannelBadges = () => {
+    const loadBadges = () => {
       fetch(`${ARCHIVE_API_BASE}/v2/badges`, {
         method: "GET",
         headers: {
@@ -66,23 +65,7 @@ export default function Chat(props) {
         .then((response) => response.json())
         .then((data) => {
           if (data.error) return;
-          channelBadges.current = data;
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    };
-
-    const loadGlobalTwitchBadges = () => {
-      fetch(GLOBAL_TWITCH_BADGES_API, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          globalTwitchBadges.current = data.badge_sets;
+          badges.current = data;
         })
         .catch((e) => {
           console.error(e);
@@ -189,8 +172,7 @@ export default function Chat(props) {
     };
 
     loadEmotes();
-    loadChannelBadges();
-    loadGlobalTwitchBadges();
+    loadBadges();
   }, [vodId, ARCHIVE_API_BASE, twitchId, channel]);
 
   const getCurrentTime = useCallback(() => {
@@ -247,15 +229,18 @@ export default function Chat(props) {
         });
     };
 
-    const transformBadges = (badges) => {
+    const transformBadges = (textBadges) => {
       const badgeWrapper = [];
+      if (!badges.current) return;
+      const channelBadges = badges.current.channel;
+      const globalBadges = badges.current.global;
 
-      for (const textBadge of badges) {
+      for (const textBadge of textBadges) {
         const badgeId = textBadge._id ?? textBadge.setID;
         const version = textBadge.version;
 
-        if (channelBadges.current) {
-          const badge = channelBadges.current.find((channelBadge) => channelBadge.set_id === badgeId);
+        if (channelBadges) {
+          const badge = channelBadges.find((channelBadge) => channelBadge.set_id === badgeId);
           if (badge) {
             const badgeVersion = badge.versions.find((badgeVersion) => badgeVersion.id === version);
             if (badgeVersion) {
@@ -283,15 +268,16 @@ export default function Chat(props) {
           }
         }
 
-        if (globalTwitchBadges.current) {
-          const twitchBadge = globalTwitchBadges.current[badgeId];
-          if (twitchBadge) {
+        if (globalBadges) {
+          const badge = globalBadges.find((globalBadge) => globalBadge.set_id === badgeId);
+          if (badge) {
+            const badgeVersion = badge.versions.find((badgeVersion) => badgeVersion.id === version);
             badgeWrapper.push(
               <MessageTooltip
                 key={badgesCount++}
                 title={
                   <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                    <img crossOrigin="anonymous" style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }} src={twitchBadge.versions[version].image_url_4x} alt="" />
+                    <img crossOrigin="anonymous" style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }} src={badgeVersion.image_url_4x} alt="" />
                     <Typography display="block" variant="caption">{`${badgeId}`}</Typography>
                   </Box>
                 }
@@ -299,8 +285,8 @@ export default function Chat(props) {
                 <img
                   crossOrigin="anonymous"
                   style={{ display: "inline-block", minWidth: "1rem", height: "1rem", margin: "0 .2rem .1rem 0", backgroundPosition: "50%", verticalAlign: "middle" }}
-                  srcSet={`${twitchBadge.versions[version].image_url_1x} 1x, ${twitchBadge.versions[version].image_url_2x} 2x, ${twitchBadge.versions[version].image_url_4x} 4x`}
-                  src={twitchBadge.image1x}
+                  srcSet={`${badgeVersion.image_url_1x} 1x, ${badgeVersion.image_url_2x} 2x, ${badgeVersion.image_url_4x} 4x`}
+                  src={badgeVersion.image_url_1x}
                   alt=""
                 />
               </MessageTooltip>
