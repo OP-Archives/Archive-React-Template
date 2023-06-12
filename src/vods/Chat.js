@@ -26,8 +26,7 @@ export default function Chat(props) {
   const [showChat, setShowChat] = useState(true);
   const [shownMessages, setShownMessages] = useState([]);
   const comments = useRef([]);
-  const channelBadges = useRef();
-  const globalTwitchBadges = useRef();
+  const badges = useRef();
   const emotes = useRef({ ffz_emotes: [], bttv_emotes: [], "7tv_emotes": [] });
   const cursor = useRef();
   const loopRef = useRef();
