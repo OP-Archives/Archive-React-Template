@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, useMediaQuery, Box } from "@mui/material";
-import Logo from "../assets/logo.webp";
+import Logo from "../assets/logo.gif";
 import CustomLink from "../utils/CustomLink";
 import Drawer from "./drawer";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
@@ -28,7 +28,7 @@ export default function Navbar(props) {
             <Typography variant="h6" component="div">
               <CustomLink color="inherit" href="/">
                 <Typography color="primary" variant="h6">
-                  {channel}
+                  {channel} VODs
                 </Typography>
               </CustomLink>
             </Typography>

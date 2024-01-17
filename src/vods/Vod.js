@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Link, Grid } from "@mui/material";
 import CustomLink from "../utils/CustomLink";
-import sadge from "../assets/sadge.jpg";
+import sadge from "../assets/placeholder.png";
 import Chapters from "./ChaptersMenu";
 import WatchMenu from "./WatchMenu";
 import CustomWidthTooltip from "../utils/CustomToolTip";

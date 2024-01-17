@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Box, Typography, MenuItem, Autocomplete, TextField, CircularProgress } from "@mui/material";
-import Thumbnail from "../assets/sadge.jpg";
+import Thumbnail from "../assets/placeholder.png";
 import CustomLink from "../utils/CustomLink";
 import debounce from "lodash.debounce";
 
