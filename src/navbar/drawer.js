@@ -8,7 +8,7 @@ import ReportIcon from "@mui/icons-material/Report";
 const mainLinks = [
   { title: `Home`, path: `/`, icon: <HomeIcon color="primary" /> },
   { title: `Vods`, path: `/vods`, icon: <OndemandVideoIcon color="primary" /> },
-  { title: `Report an Issue`, path: `${process.env.REACT_APP_GITHUB}/issues`, icon: <ReportIcon color="primary" /> },
+  { title: `Issues`, path: `${process.env.REACT_APP_GITHUB}/issues`, icon: <ReportIcon color="primary" /> },
 ];
 
 export default function DrawerComponent(props) {
